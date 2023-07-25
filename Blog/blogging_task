@@ -1,0 +1,46 @@
+Blogging Platform
+Project Description:
+The Blogging Platform is a web application that allows users to create blog posts. This app
+will have a User Section as well as an Admin Section. Users can create an account, log in,
+and perform CRUD operations on their own blog posts. Users can also add comments, and
+edit or delete them. The application also allows users to view blog posts added by other
+users whereas an admin user can read, update and delete all blog posts.
+The application will have the following features:
+User Section
+1. User Authentication:
+a. Users will be able to create an account, log in, and log out.
+b. Newly registered users should receive an email upon registration.
+2. Blog Posts:
+a. Users can perform CRUD operations in their own blog posts.
+b. Users can view the list & details of all blog posts, including blogs posted by
+other users.
+c. Users should be able to upload image attachments with the blog.
+d. A blog post should have a title, content, created time & updated time. The rest
+of the fields should be added as per requirement.
+
+3. Comments:
+a. Users can add comments to any posts.
+b. A user should be able to see all the comments that are posted under a blog
+post.
+c. Only the author of the comment will be allowed to edit or delete the
+comments.
+d. The created time & updated time of the comment should be saved.
+
+Admin Section
+1. Authentication:
+a. Admins will be able to log in and log out.
+b. A new admin user can only be registered by another authenticated admin
+user.
+2. Blog Posts:
+a. Admins can view the list & details of all blog posts.
+b. Admins should be able to delete blog posts.
+3. Comments:
+a. Admins can view the list of all comments under a post.
+b. Admins should be able to delete comments.
+
+Technical Requirements:
+● The backend should be built using Django Rest Framework with JWT
+authentication.
+
+Deliverables:
+● Source code for the project hosted on GitHub.
