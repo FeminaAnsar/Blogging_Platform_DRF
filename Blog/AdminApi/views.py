@@ -9,16 +9,27 @@ from .serializers import (
         AdminPostCommentListSerializer,AdminPostSerializer
                           )
 from BlogApi.pagination import CustomPagination
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class RegisterNewAdminView(generics.CreateAPIView):
     permission_classes = [IsAdminUser]
+    authentication_classes = [JWTAuthentication]
     queryset = User.objects.all()
     serializer_class = RegisterNewAdminSerializer
+
+    def post(self, request):
+        serializer = RegisterNewAdminSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({"message": "SuperUser(Admin) registration successful", "data": serializer.data},
+                            status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AdminPostListView(generics.ListAPIView):
     permission_classes = [IsAdminUser]
+    authentication_classes = [JWTAuthentication]
     queryset = PostModel.objects.all()
     serializer_class = AdminPostSerializer
     pagination_class = CustomPagination
@@ -26,12 +37,14 @@ class AdminPostListView(generics.ListAPIView):
 
 class AdminPostDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAdminUser]
+    authentication_classes = [JWTAuthentication]
     queryset = PostModel.objects.all()
     serializer_class = AdminPostSerializer
 
 
 class AdminPostDeleteView(generics.DestroyAPIView):
     permission_classes = [IsAdminUser]
+    authentication_classes = [JWTAuthentication]
     queryset = PostModel.objects.all()
     serializer_class = AdminPostSerializer
 
@@ -41,6 +54,7 @@ class AdminPostDeleteView(generics.DestroyAPIView):
 
 class AdminPostCommentListView(generics.RetrieveAPIView):
     permission_classes = [IsAdminUser]
+    authentication_classes = [JWTAuthentication]
     queryset = PostModel.objects.all()
     serializer_class = AdminPostCommentListSerializer
     pagination_class = CustomPagination
@@ -48,6 +62,7 @@ class AdminPostCommentListView(generics.RetrieveAPIView):
 
 class AdminDeleteCommentView(generics.DestroyAPIView):
     permission_classes = [IsAdminUser]
+    authentication_classes = [JWTAuthentication]
     queryset = CommentModel.objects.all()
     serializer_class = AdminCommentSerializer
 
@@ -57,6 +72,7 @@ class AdminDeleteCommentView(generics.DestroyAPIView):
 
 class UserLogoutView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def post(self,request):
         logout(request)

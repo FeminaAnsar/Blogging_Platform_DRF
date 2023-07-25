@@ -1,13 +1,8 @@
 from django.core.mail import send_mail
-from rest_framework import serializers
+from rest_framework import serializers,status
 from AdminApi.models import User
 from django.conf import settings
-import smtplib
-from email.mime.text import MIMEText
-from socket import gaierror
-from rest_framework.response import Response
 from BlogApi.models import PostModel, CommentModel, ImageModel
-from django.utils.translation import gettext_lazy as _
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -29,31 +24,25 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             user.set_password(validated_data['password'])
             user.save()
 
-            try:
-                email_to = user.email
-                subject = 'Registration mail'
-                email_body = f"""
-                    Welcome to our Blogging Platform.Thank you for registering.\n
-                    First Name : {user.first_name}\n
-                    Last Name : {user.last_name}\n
-                    Email : {user.email}\n
-                    Username : {user.username}\n
-                    Password : {self._validated_data['password']}\n
-                    Please Login with above credentials
+            email_to = [user.email]
+            subject = 'Registration mail'
+            message = f"""
+                Welcome to our Blogging Platform.Thank you for registering.\n
+                First Name : {user.first_name}\n
+                Last Name : {user.last_name}\n
+                Email : {user.email}\n
+                Username : {user.username}\n
+                Password : {self._validated_data['password']}\n
+                Please Login with above credentials
 
                 """
-                message = MIMEText(email_body)
-                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, email_to)
 
-                return user
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, email_to)
 
-            except (gaierror, ConnectionRefusedError):
-                return Response(' Failed to connect to the server. Check your internet connection.')
+            return user
 
-            except smtplib.SMTPServerDisconnected as s:
-                return Response('Invalid credentials...!', s)
-            except Exception as e:
-                return Response('Something went wrong...!', e)
+
+
 
 
 class CreatePostSerializer(serializers.ModelSerializer):

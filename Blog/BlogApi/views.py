@@ -7,8 +7,7 @@ from .permissions import IsOwner
 from AdminApi.models import User
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .serializers import (
-    RegisterUserSerializer,ImageSerializer,
+from .serializers import (  RegisterUserSerializer,ImageSerializer,
     CreateCommentSerializer,EditCommentSerializer, DeleteCommentSerializer, PostCommentListSerializer,
     CreatePostSerializer, DetailPostSerializer,UpdatePostSerializer,DeletePostSerializer,AllPostListSerializer
 )
@@ -18,6 +17,14 @@ class RegisterUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = RegisterUserSerializer
+
+    def post(self, request):
+        serializer = RegisterUserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({"message":  "Registration successful!!!Login credentials send to registered email"},
+                            status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreatePostView(generics.CreateAPIView):
@@ -48,14 +55,26 @@ class DetailPostView(generics.RetrieveAPIView):
 
 
 class UpdatePostView(generics.UpdateAPIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated,IsOwner]
     authentication_classes = [JWTAuthentication]
     queryset = PostModel.objects.all()
     serializer_class = UpdatePostSerializer
 
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
-        return Response({'message': 'Post Updated'})
+    def put(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = UpdatePostSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = UpdatePostSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DeletePostView(generics.DestroyAPIView):
