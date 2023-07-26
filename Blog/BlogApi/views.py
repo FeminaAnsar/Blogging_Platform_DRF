@@ -68,7 +68,7 @@ class UpdatePostView(generics.UpdateAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         user = self.get_object()
         serializer = UpdatePostSerializer(user, data=request.data)
         if serializer.is_valid():
@@ -82,10 +82,6 @@ class DeletePostView(generics.DestroyAPIView):
     authentication_classes = [JWTAuthentication]
     queryset = PostModel.objects.all()
     serializer_class = DeletePostSerializer
-
-    def perform_delete(self, serializer):
-        serializer.save(user=self.request.user)
-        return Response({'message': 'Post Deleted'})
 
 
 class AllPostListView(generics.ListAPIView):
@@ -150,10 +146,6 @@ class CommentEditView(generics.UpdateAPIView):
     queryset = CommentModel.objects.all()
     serializer_class = EditCommentSerializer
 
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
-        return Response({'message': 'Comment edited'})
-
 
 class CommentDeleteView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, IsOwner]
@@ -161,8 +153,5 @@ class CommentDeleteView(generics.DestroyAPIView):
     queryset = CommentModel.objects.all()
     serializer_class = DeleteCommentSerializer
 
-    def perform_delete(self, serializer):
-        serializer.save(user=self.request.user)
-        return Response({'message': 'Post deleted'})
 
 # Create your views here.

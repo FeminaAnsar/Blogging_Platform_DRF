@@ -42,7 +42,10 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             return user
 
 
-
+class CommentUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email']
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
@@ -58,10 +61,25 @@ class CreatePostSerializer(serializers.ModelSerializer):
         return post
 
 
+class ImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ImageModel
+        fields = ['post', 'image']
+        extra_kwargs = {'post': {'required': True}, 'image': {'required': True}}
+
+    def create(self, validated_data):
+        user=self.context.get('user')
+        image = ImageModel.objects.create(user=user, **validated_data)
+        image.save()
+        return image
+
+
 class DetailPostSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True, source='imagemodel_set')
     class Meta:
         model = PostModel
-        fields = ['id', 'title', 'content', 'updated_at']
+        fields = ['id', 'title', 'content', 'updated_at','images']
 
 
 class UpdatePostSerializer(serializers.ModelSerializer):
@@ -78,9 +96,11 @@ class DeletePostSerializer(serializers.ModelSerializer):
 
 
 class AllPostListSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True, source='imagemodel_set')
+    user = CommentUserSerializer()
     class Meta:
         model = PostModel
-        fields = ['id', 'title', 'content', 'user']
+        fields = ['id', 'title', 'content', 'user','images']
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):
@@ -109,6 +129,8 @@ class DeleteCommentSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = CommentUserSerializer()
+
     class Meta:
         model = CommentModel
         fields = ['user', 'comment', 'updated_at']
@@ -116,10 +138,10 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PostCommentListSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField(read_only=True)
-
+    user = CommentUserSerializer()
     class Meta:
         model = PostModel
-        fields = ['id', 'title', 'content', 'comments']
+        fields = ['id', 'title', 'content', 'comments','user']
 
     def get_comments(self, obj):
         comments = CommentModel.objects.filter(post=obj)
@@ -130,14 +152,4 @@ class PostCommentListSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
-class ImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ImageModel
-        fields = ['post', 'image']
-        extra_kwargs = {'post': {'required': True}, 'image': {'required': True}}
 
-    def create(self, validated_data):
-        user = self.context.get('user')
-        image = ImageModel.objects.create(user=user, **validated_data)
-        image.save()
-        return image

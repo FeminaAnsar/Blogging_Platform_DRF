@@ -48,9 +48,6 @@ class AdminPostDeleteView(generics.DestroyAPIView):
     queryset = PostModel.objects.all()
     serializer_class = AdminPostSerializer
 
-    def delete(self, request, *args, **kwargs):
-        return Response({'message': 'Post Deleted'})
-
 
 class AdminPostCommentListView(generics.RetrieveAPIView):
     permission_classes = [IsAdminUser]
@@ -65,9 +62,6 @@ class AdminDeleteCommentView(generics.DestroyAPIView):
     authentication_classes = [JWTAuthentication]
     queryset = CommentModel.objects.all()
     serializer_class = AdminCommentSerializer
-
-    def delete(self, request, *args, **kwargs):
-        return Response({'message': 'Comment Deleted'})
 
 
 class UserLogoutView(generics.GenericAPIView):

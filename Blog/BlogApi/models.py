@@ -17,7 +17,7 @@ class PostModel(models.Model):
 
 
 class ImageModel(models.Model):
-    post = models.ForeignKey(PostModel, on_delete=models.CASCADE)
+    post = models.ForeignKey(PostModel, on_delete=models.CASCADE,related_name='imagemodel_set')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='images')
     created_at = models.DateField(auto_now_add=True)

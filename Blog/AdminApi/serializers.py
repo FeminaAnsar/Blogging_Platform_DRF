@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import User
 from BlogApi.models import PostModel, CommentModel
 from rest_framework.response import Response
-
+from BlogApi.serializers import CommentUserSerializer,ImageSerializer
 
 class RegisterNewAdminSerializer(serializers.ModelSerializer):
     is_superuser = serializers.BooleanField(default=False,read_only=True)
@@ -33,9 +33,11 @@ class RegisterNewAdminSerializer(serializers.ModelSerializer):
 
 
 class AdminPostSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True, source='imagemodel_set')
+    user = CommentUserSerializer()
     class Meta:
         model = PostModel
-        fields = '__all__'
+        fields = ['id', 'title', 'content', 'user','images']
 
 
 class AdminCommentSerializer(serializers.ModelSerializer):
