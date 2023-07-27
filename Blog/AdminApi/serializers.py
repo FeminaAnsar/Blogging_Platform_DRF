@@ -4,6 +4,7 @@ from BlogApi.models import PostModel, CommentModel
 from rest_framework.response import Response
 from BlogApi.serializers import CommentUserSerializer,ImageSerializer
 
+
 class RegisterNewAdminSerializer(serializers.ModelSerializer):
     is_superuser = serializers.BooleanField(default=False,read_only=True)
     is_staff = serializers.BooleanField(default=False,read_only=True)
@@ -37,7 +38,7 @@ class AdminPostSerializer(serializers.ModelSerializer):
     user = CommentUserSerializer()
     class Meta:
         model = PostModel
-        fields = ['id', 'title', 'content', 'user','images']
+        fields = ['id', 'title', 'content', 'user','images','created_at','updated_at']
 
 
 class AdminCommentSerializer(serializers.ModelSerializer):
@@ -56,7 +57,7 @@ class AdminPostCommentListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PostModel
-        fields = ['id', 'title', 'content', 'comments']
+        fields = ['id', 'title', 'content','created_at','updated_at','comments']
 
     def get_comments(self, obj):
         comments = CommentModel.objects.filter(post=obj)

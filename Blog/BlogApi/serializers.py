@@ -51,7 +51,7 @@ class CommentUserSerializer(serializers.ModelSerializer):
 class CreatePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostModel
-        fields = ['title', 'content']
+        fields = ['title', 'content','created_at']
         extra_kwargs = {'title': {'required': True}, 'content': {'required': True}}
 
     def create(self, validated_data):
@@ -79,13 +79,13 @@ class DetailPostSerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True, read_only=True, source='imagemodel_set')
     class Meta:
         model = PostModel
-        fields = ['id', 'title', 'content', 'updated_at','images']
+        fields = ['id', 'title', 'content','created_at','updated_at','images']
 
 
 class UpdatePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostModel
-        fields = ['title', 'content']
+        fields = ['title', 'content','updated_at']
         extra_kwargs = {'title': {'required': True}, 'content': {'required': True}}
 
 
@@ -133,7 +133,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CommentModel
-        fields = ['user', 'comment', 'updated_at']
+        fields = ['user', 'comment','created_at','updated_at']
 
 
 class PostCommentListSerializer(serializers.ModelSerializer):
