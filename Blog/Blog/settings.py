@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-rvf(4g+@1*^^^i&4()iaf_6%r2!241g2!fa^3hge&+x&nq3648
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'rest_framework_simplejwt',
     'AdminApi',
@@ -151,5 +152,3 @@ EMAIL_PORT = '2525'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-#MEDIA_URL='/media/'
-#MEDIA_ROOT=os.path.join(BASE_DIR,'media/')
