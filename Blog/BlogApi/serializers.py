@@ -3,6 +3,11 @@ from rest_framework import serializers,status
 from AdminApi.models import User
 from django.conf import settings
 from BlogApi.models import PostModel, CommentModel, ImageModel
+from django.template import Context
+from django.template.loader import render_to_string,get_template
+from django.core.mail import EmailMessage,EmailMultiAlternatives
+from django.utils.html import strip_tags
+
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -26,18 +31,11 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
             email_to = [user.email]
             subject = 'Registration mail'
-            message = f"""
-                Welcome to our Blogging Platform.Thank you for registering.\n
-                First Name : {user.first_name}\n
-                Last Name : {user.last_name}\n
-                Email : {user.email}\n
-                Username : {user.username}\n
-                Password : {self._validated_data['password']}\n
-                Please Login with above credentials
-
-                """
-
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, email_to)
+            html_content = render_to_string('mail.html', {'title': 'Registration Email'})
+            text_content=strip_tags(html_content)
+            email=EmailMultiAlternatives(subject,text_content,settings.DEFAULT_FROM_EMAIL,email_to)
+            email.attach_alternative(html_content,'text/html')
+            email.send()
 
             return user
 

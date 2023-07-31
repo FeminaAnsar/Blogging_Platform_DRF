@@ -6,7 +6,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .permissions import IsOwner
 from AdminApi.models import User
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
 from .serializers import (  RegisterUserSerializer,ImageSerializer,
     CreateCommentSerializer,EditCommentSerializer, DeleteCommentSerializer, PostCommentListSerializer,
     CreatePostSerializer, DetailPostSerializer,UpdatePostSerializer,DeletePostSerializer,AllPostListSerializer
@@ -22,7 +21,7 @@ class RegisterUserView(generics.CreateAPIView):
         serializer = RegisterUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            return Response({"message":  "Registration successful!!!Login credentials send to registered email"},
+            return Response({"message":  "Registration successful!!!"},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
